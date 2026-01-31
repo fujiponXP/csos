@@ -1,0 +1,8 @@
+/* filelist.css */
+.directory {
+  font-weight: bold;
+}
+
+.file {
+  color: #555;
+}

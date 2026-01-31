@@ -1,0 +1,44 @@
+/* タイトル用 */
+.popup-menu-title {
+  padding: 6px 12px;
+  font-weight: bold;
+  color: #333;
+  background-color: #eee; /* タイトル背景色 */
+  cursor: default;        /* ホバー不可 */
+  user-select: none;
+}
+
+.popup-menu {
+  background-color: #f0f0f0;
+  border: 1px solid #555;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(100,100,100,0.5);
+  z-index: 1000;
+  position: absolute;
+  color: #000;
+  font-size: 13px;
+  font-family: system-ui, sans-serif;
+}
+
+.popup-menu-item {
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  /* 文字選択禁止 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.popup-menu-item.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* hover */
+.popup-menu-item:hover {
+  background-color: #007acc;
+  color: #fff;
+}

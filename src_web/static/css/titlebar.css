@@ -1,0 +1,22 @@
+/* titlebar.css */
+.titlebar {
+  background: #007acc;
+  color: #fff;
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+}
+
+.titlebar .button-container {
+  display: flex;
+  gap: 4px;
+}
+
+.titlebar .button-container button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}

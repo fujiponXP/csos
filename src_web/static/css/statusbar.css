@@ -1,0 +1,7 @@
+/* statusbar.css */
+.statusbar {
+  background: #eee;
+  padding: 3px 5px;
+  font-size: 0.9em;
+  color: #333;
+}

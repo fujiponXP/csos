@@ -1,0 +1,22 @@
+{
+  "name": "csos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:server": "npx ts-node --esm src_server/index.ts",
+    "build:server": "tsc -p tsconfig.server.json",
+    "start": "node dist_server/index.js",
+    "build:web": "tsc -p tsconfig.web.json",
+    "build": "npm run build:server && npm run build:web"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.9.3"
+  }
+}

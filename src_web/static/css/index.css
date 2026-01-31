@@ -1,0 +1,7 @@
+/* index.css */
+@import "./base.css";
+@import "./filelist.css";
+@import "./window.css";
+@import "./titlebar.css";
+@import "./statusbar.css";
+@import "./popup-menu.css";

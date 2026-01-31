@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "src_web/static",
+    "rootDir": "src_web",
+    "lib": ["DOM", "ES2022"],
+    "noEmitOnError": true
+  },
+  "include": ["src_web/**/*.ts"]
+}
