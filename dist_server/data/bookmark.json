@@ -1,0 +1,7 @@
+[
+  { "objtype": "button", "label": "Google", "url": "https://www.google.co.jp" },
+  { "objtype": "label", "text": "検索サイト一覧" },
+  { "objtype": "button", "label": "窓の杜", "url": "https://forest.watch.impress.co.jp/" },
+  { "objtype": "button", "label": "Bing", "url": "https://www.bing.com" },
+  { "objtype": "label", "text": "以上です" }
+]

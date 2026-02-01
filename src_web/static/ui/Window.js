@@ -2,16 +2,20 @@
 import { Button } from "./Button.js";
 import { TitleBar } from "./TitleBar.js";
 import { StatusBar } from "./StatusBar.js";
+import { JsonViewer } from "./JsonViewer.js";
 export class Window {
     title;
+    jsonBuilder;
     element;
     contentEl;
     titleBar;
     statusBar;
     minimized = false;
     maximized = false;
-    constructor(title) {
+    constructor(title, jsonBuilder // JsonWindow 用
+    ) {
         this.title = title;
+        this.jsonBuilder = jsonBuilder;
         // ===============================
         // ウインドウ本体
         // ===============================
@@ -27,9 +31,13 @@ export class Window {
         const btnClose = new Button({ kind: "icon", icon: "/static/button_close.png" }, this.onButtonClick.bind(this), "close");
         btnClose.setSize(16);
         // ===============================
-        // タイトルバー
+        // タイトルバー（メニューハンドラ付き）
         // ===============================
-        this.titleBar = new TitleBar(title, [btnMin, btnMax, btnClose]);
+        const menuHandler = {
+            onSave: () => this.saveJson(),
+            onShow: () => this.showJson(),
+        };
+        this.titleBar = new TitleBar(title, [btnMin, btnMax, btnClose], menuHandler);
         this.element.appendChild(this.titleBar.element);
         // ===============================
         // コンテンツ領域
@@ -52,8 +60,17 @@ export class Window {
     hide() {
         this.element.remove();
     }
-    setContent(html) {
-        this.contentEl.innerHTML = html;
+    // ===============================
+    // setContent を HTMLElement も受け取れるように拡張
+    // ===============================
+    setContent(content) {
+        this.contentEl.innerHTML = "";
+        if (typeof content === "string") {
+            this.contentEl.innerHTML = content;
+        }
+        else {
+            this.contentEl.appendChild(content);
+        }
     }
     setStatus(text) {
         this.statusBar.setText(text);
@@ -99,5 +116,32 @@ export class Window {
                 this.hide();
                 break;
         }
+    }
+    // ===============================
+    // JSON保存（メニューボタンから呼ばれる）
+    // ===============================
+    saveJson() {
+        if (!this.jsonBuilder)
+            return;
+        const jsonData = this.jsonBuilder.serialize();
+        fetch("/api/save-json", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(jsonData),
+        })
+            .then(() => this.setStatus("保存完了"))
+            .catch(() => this.setStatus("保存失敗"));
+    }
+    // ===============================
+    // JSON表示（メニューボタンから呼ばれる）
+    // ===============================
+    showJson() {
+        if (!this.jsonBuilder)
+            return;
+        const jsonData = this.jsonBuilder.serialize();
+        // JsonViewer を作成して表示
+        const jsonViewer = new JsonViewer("JSONデータ");
+        jsonViewer.setJson(jsonData); // ← setJsonObjects ではなく setJson を使う
+        jsonViewer.show(document.body);
     }
 }

@@ -1,0 +1,6 @@
+[
+  { "objtype": "button", "label": "Google", "url": "https://www.google.co.jp" },
+  { "objtype": "button", "label": "Yahoo", "url": "https://www.yahoo.co.jp" },
+  { "objtype": "button", "label": "Bing", "url": "https://www.bing.com" },
+  { "objtype": "audio", "src": "/audio/古の街道.mp3", "controls": true }
+]

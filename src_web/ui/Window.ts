@@ -1,8 +1,10 @@
 // src_web/ui/Window.ts
 
 import { Button, ButtonType } from "./Button.js";
-import { TitleBar } from "./TitleBar.js";
+import { TitleBar, TitleBarMenuHandler } from "./TitleBar.js";
 import { StatusBar } from "./StatusBar.js";
+import { JsonUIBuilder, JsonObject } from "./JsonParser.js";
+import { JsonViewer } from "./JsonViewer.js";
 
 export class Window {
   element: HTMLDivElement;
@@ -13,7 +15,10 @@ export class Window {
   private minimized = false;
   private maximized = false;
 
-  constructor(public title: string) {
+  constructor(
+    public title: string,
+    private jsonBuilder?: JsonUIBuilder  // JsonWindow 用
+  ) {
     // ===============================
     // ウインドウ本体
     // ===============================
@@ -24,30 +29,34 @@ export class Window {
     // ボタン作成（画像のみ・16x16）
     // ===============================
     const btnMin = new Button(
-        { kind: "icon", icon: "/static/button_minimize.png" },
-        this.onButtonClick.bind(this),
-        "minimize"
-        );
+      { kind: "icon", icon: "/static/button_minimize.png" },
+      this.onButtonClick.bind(this),
+      "minimize"
+    );
     btnMin.setSize(16);
 
     const btnMax = new Button(
-        { kind: "icon", icon: "/static/button_maximize.png" },
-        this.onButtonClick.bind(this),
-        "maximize"
-        );
+      { kind: "icon", icon: "/static/button_maximize.png" },
+      this.onButtonClick.bind(this),
+      "maximize"
+    );
     btnMax.setSize(16);
 
     const btnClose = new Button(
-        { kind: "icon", icon: "/static/button_close.png" },
-        this.onButtonClick.bind(this),
-        "close"
-        );
+      { kind: "icon", icon: "/static/button_close.png" },
+      this.onButtonClick.bind(this),
+      "close"
+    );
     btnClose.setSize(16);
 
-// ===============================
-    // タイトルバー
     // ===============================
-    this.titleBar = new TitleBar(title, [btnMin, btnMax, btnClose]);
+    // タイトルバー（メニューハンドラ付き）
+    // ===============================
+    const menuHandler: TitleBarMenuHandler = {
+      onSave: () => this.saveJson(),
+      onShow: () => this.showJson(),
+    };
+    this.titleBar = new TitleBar(title, [btnMin, btnMax, btnClose], menuHandler);
     this.element.appendChild(this.titleBar.element);
 
     // ===============================
@@ -75,8 +84,16 @@ export class Window {
     this.element.remove();
   }
 
-  setContent(html: string) {
-    this.contentEl.innerHTML = html;
+  // ===============================
+  // setContent を HTMLElement も受け取れるように拡張
+  // ===============================
+  setContent(content: string | HTMLElement) {
+    this.contentEl.innerHTML = "";
+    if (typeof content === "string") {
+      this.contentEl.innerHTML = content;
+    } else {
+      this.contentEl.appendChild(content);
+    }
   }
 
   setStatus(text: string) {
@@ -127,4 +144,34 @@ export class Window {
         break;
     }
   }
+
+  // ===============================
+  // JSON保存（メニューボタンから呼ばれる）
+  // ===============================
+  private saveJson() {
+    if (!this.jsonBuilder) return;
+    const jsonData: JsonObject[] = this.jsonBuilder.serialize();
+
+    fetch("/api/save-json", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(jsonData),
+    })
+      .then(() => this.setStatus("保存完了"))
+      .catch(() => this.setStatus("保存失敗"));
+  }
+
+  // ===============================
+  // JSON表示（メニューボタンから呼ばれる）
+  // ===============================
+  private showJson() {
+    if (!this.jsonBuilder) return;
+    const jsonData: JsonObject[] = this.jsonBuilder.serialize();
+
+    // JsonViewer を作成して表示
+    const jsonViewer = new JsonViewer("JSONデータ");
+    jsonViewer.setJson(jsonData);  // ← setJsonObjects ではなく setJson を使う
+    jsonViewer.show(document.body);
+  }
+
 }

@@ -1,3 +1,4 @@
+// routes/files.ts
 import { Router } from "express";
 import { resolve } from "node:path";
 import { FileListJsonBuilder } from "../FileListJsonBuilder.js";
@@ -12,6 +13,8 @@ filesRouter.get("/", async (req, res) => {
             return res.status(400).json({ error: "dir query is required" });
         }
         const targetDir = resolve(BASE_DIR, dirParam);
+        console.log("BASE_DIR =", BASE_DIR);
+        console.log("dirParam =", dirParam);
         // 🔒 ディレクトリトラバーサル対策
         if (!targetDir.startsWith(BASE_DIR)) {
             return res.status(403).json({ error: "Access denied" });

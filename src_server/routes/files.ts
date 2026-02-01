@@ -1,3 +1,4 @@
+// routes/files.ts
 import { Router } from "express";
 import { resolve } from "node:path";
 import { FileListJsonBuilder } from "../FileListJsonBuilder.js";
@@ -17,6 +18,8 @@ filesRouter.get("/", async (req, res) => {
     }
 
     const targetDir = resolve(BASE_DIR, dirParam);
+console.log("BASE_DIR =", BASE_DIR);
+console.log("dirParam =", dirParam);
 
     // 🔒 ディレクトリトラバーサル対策
     if (!targetDir.startsWith(BASE_DIR)) {
@@ -26,8 +29,9 @@ filesRouter.get("/", async (req, res) => {
     const files = await builder.build(targetDir);
     res.json(files);
 
-  } catch (err) {
+} catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to read directory" });
   }
+
 });
